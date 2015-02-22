@@ -15,10 +15,9 @@ CREATE TABLE match ( player1_id INTEGER REFERENCES player (id),
                        PRIMARY KEY (player1_id, player2_id),
                        CHECK (player1_id < player2_id) ); -- constraints to ensure that players are matched only once
 
-CREATE VIEW matches_winners_losers AS
+CREATE VIEW match_loser AS
     SELECT player1_id,
            player2_id,
-           winner_id,
            CASE 
                 WHEN winner_id = player1_id THEN player2_id
                 WHEN winner_id = player2_id THEN player1_id
@@ -35,9 +34,9 @@ CREATE VIEW win AS
 
 CREATE VIEW loss AS 
     SELECT player.id as loser_id,
-           COUNT(matches_winners_losers.loser_id)
-    FROM player LEFT JOIN matches_winners_losers -- has to be a left join to get zero values
-    ON player.id = matches_winners_losers.loser_id
+           COUNT(match_loser.loser_id)
+    FROM player LEFT JOIN match_loser -- has to be a left join to get zero values
+    ON player.id = match_loser.loser_id
     GROUP BY player.id;
 
 CREATE VIEW match_count AS
