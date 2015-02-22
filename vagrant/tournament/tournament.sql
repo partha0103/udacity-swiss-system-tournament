@@ -7,9 +7,9 @@
 -- these lines here.
 
 CREATE TABLE player ( id SERIAL PRIMARY KEY,
-                       name TEXT );
+                      name TEXT );
                        
-CREATE TABLE matches ( player1_id INTEGER REFERENCES player (id),
+CREATE TABLE match ( player1_id INTEGER REFERENCES player (id),
                        player2_id INTEGER REFERENCES player (id),
                        winner_id INTEGER NULL REFERENCES player (id), -- So that draws can be recorded as null, not yet used
                        PRIMARY KEY (player1_id, player2_id),
@@ -24,13 +24,13 @@ CREATE VIEW matches_winners_losers AS
                 WHEN winner_id = player2_id THEN player1_id
                 WHEN winner_id IS NULL THEN NULL
            END AS loser_id
-    FROM matches;
+    FROM match;
 
 CREATE VIEW wins AS 
     SELECT player.id as winner_id,
-           COUNT(matches.winner_id)
-    FROM player LEFT JOIN matches -- has to be a left join to get zero values
-    ON player.id = matches.winner_id
+           COUNT(match.winner_id)
+    FROM player LEFT JOIN match -- has to be a left join to get zero values
+    ON player.id = match.winner_id
     GROUP BY player.id;
 
 CREATE VIEW losses AS 
@@ -43,7 +43,7 @@ CREATE VIEW losses AS
 CREATE VIEW matches_count AS
     SELECT player.id AS player_id,
            COUNT(player1_id) 
-    FROM player LEFT JOIN matches
+    FROM player LEFT JOIN match
     ON player.id = player1_id OR player.id = player2_id
     GROUP BY player.id;
 

@@ -15,7 +15,7 @@ def deleteMatches():
     """Remove all the match records from the database."""
     dbconn = connect()
     cursor = dbconn.cursor()
-    cursor.execute("DELETE FROM matches;")
+    cursor.execute("DELETE FROM match;")
     dbconn.commit()
     dbconn.close()
 
@@ -81,7 +81,7 @@ def reportMatch(winner, loser):
     smaller_id, bigger_id = min(winner, loser), max(winner, loser)
     dbconn = connect()
     cursor = dbconn.cursor()
-    cursor.execute("INSERT INTO matches (player1_id, player2_id, winner_id) VALUES (%s, %s, %s);",
+    cursor.execute("INSERT INTO match (player1_id, player2_id, winner_id) VALUES (%s, %s, %s);",
                    (smaller_id, bigger_id, winner))
     dbconn.commit()
     dbconn.close()
