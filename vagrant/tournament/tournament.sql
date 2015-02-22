@@ -6,12 +6,12 @@
 -- You can write comments in this file by starting them with two dashes, like
 -- these lines here.
 
-CREATE TABLE players ( id SERIAL PRIMARY KEY,
+CREATE TABLE player ( id SERIAL PRIMARY KEY,
                        name TEXT );
                        
-CREATE TABLE matches ( player1_id INTEGER REFERENCES players (id),
-                       player2_id INTEGER REFERENCES players (id),
-                       winner_id INTEGER NULL REFERENCES players (id), -- So that draws can be recorded as null, not yet used
+CREATE TABLE matches ( player1_id INTEGER REFERENCES player (id),
+                       player2_id INTEGER REFERENCES player (id),
+                       winner_id INTEGER NULL REFERENCES player (id), -- So that draws can be recorded as null, not yet used
                        PRIMARY KEY (player1_id, player2_id),
                        CHECK (player1_id < player2_id) ); -- constraints to ensure that players are matched only once
 
@@ -27,37 +27,37 @@ CREATE VIEW matches_winners_losers AS
     FROM matches;
 
 CREATE VIEW wins AS 
-    SELECT players.id as winner_id,
+    SELECT player.id as winner_id,
            COUNT(matches.winner_id)
-    FROM players LEFT JOIN matches -- has to be a left join to get zero values
-    ON players.id = matches.winner_id
-    GROUP BY players.id;
+    FROM player LEFT JOIN matches -- has to be a left join to get zero values
+    ON player.id = matches.winner_id
+    GROUP BY player.id;
 
 CREATE VIEW losses AS 
-    SELECT players.id as loser_id,
+    SELECT player.id as loser_id,
            COUNT(matches_winners_losers.loser_id)
-    FROM players LEFT JOIN matches_winners_losers -- has to be a left join to get zero values
-    ON players.id = matches_winners_losers.loser_id
-    GROUP BY players.id;
+    FROM player LEFT JOIN matches_winners_losers -- has to be a left join to get zero values
+    ON player.id = matches_winners_losers.loser_id
+    GROUP BY player.id;
 
 CREATE VIEW matches_count AS
-    SELECT players.id AS player_id,
+    SELECT player.id AS player_id,
            COUNT(player1_id) 
-    FROM players LEFT JOIN matches
-    ON players.id = player1_id OR players.id = player2_id
-    GROUP BY players.id;
+    FROM player LEFT JOIN matches
+    ON player.id = player1_id OR player.id = player2_id
+    GROUP BY player.id;
 
 CREATE VIEW player_standings AS
     SELECT winner_id as player_id,
-           players.name,
+           player.name,
            wins.count as win_count,
            losses.count as lose_count,
            matches_count.count as match_count
     FROM wins
         JOIN losses
         ON winner_id = loser_id
-        JOIN players
-        ON winner_id = players.id
+        JOIN player
+        ON winner_id = player.id
         JOIN matches_count
         ON winner_id = matches_count.player_id
     ORDER BY win_count;
@@ -66,7 +66,7 @@ CREATE VIEW numbered_standings AS
     SELECT 
         ROW_NUMBER() OVER(ORDER BY win_count DESC) as row,
         ROW_NUMBER() OVER(ORDER BY win_count DESC) % 2 = 0 as even_row, * 
-    FROM player_standings
+    FROM player_standings;
 
 CREATE VIEW swiss_pairings AS
     SELECT

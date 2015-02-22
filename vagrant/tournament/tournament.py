@@ -23,7 +23,7 @@ def deletePlayers():
     """Remove all the player records from the database."""
     dbconn = connect()
     cursor = dbconn.cursor()
-    cursor.execute("DELETE FROM players;")
+    cursor.execute("DELETE FROM player;")
     dbconn.commit()
     dbconn.close()
 
@@ -31,7 +31,7 @@ def countPlayers():
     """Returns the number of players currently registered."""
     dbconn = connect()
     cursor = dbconn.cursor()
-    cursor.execute("SELECT COUNT(*) FROM players;")
+    cursor.execute("SELECT COUNT(*) FROM player;")
     count = cursor.fetchall()[0][0]
     dbconn.close()
     return count
@@ -47,7 +47,7 @@ def registerPlayer(name):
     """
     dbconn = connect()
     cursor = dbconn.cursor()
-    cursor.execute("INSERT INTO players (name) VALUES (%s);", (name,))
+    cursor.execute("INSERT INTO player (name) VALUES (%s);", (name,))
     dbconn.commit()
     dbconn.close()
 
