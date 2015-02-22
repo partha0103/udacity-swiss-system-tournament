@@ -66,7 +66,7 @@ def playerStandings():
     """
     dbconn = connect()
     cursor = dbconn.cursor()
-    cursor.execute("SELECT player_id, name, win_count, match_count FROM player_standings;")
+    cursor.execute("SELECT player_id, name, win_count, match_count FROM player_standing;")
     results = cursor.fetchall()
     dbconn.close()
     return results
