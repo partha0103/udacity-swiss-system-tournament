@@ -26,7 +26,7 @@ CREATE VIEW matches_winners_losers AS
            END AS loser_id
     FROM match;
 
-CREATE VIEW wins AS 
+CREATE VIEW win AS 
     SELECT player.id as winner_id,
            COUNT(match.winner_id)
     FROM player LEFT JOIN match -- has to be a left join to get zero values
@@ -50,10 +50,10 @@ CREATE VIEW matches_count AS
 CREATE VIEW player_standings AS
     SELECT winner_id as player_id,
            player.name,
-           wins.count as win_count,
+           win.count as win_count,
            losses.count as lose_count,
            matches_count.count as match_count
-    FROM wins
+    FROM win
         JOIN losses
         ON winner_id = loser_id
         JOIN player
