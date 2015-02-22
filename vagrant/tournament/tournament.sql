@@ -59,4 +59,5 @@ CREATE VIEW player_standings AS
         JOIN players
         ON winner_id = players.id
         JOIN matches_count
-        ON winner_id = matches_count.player_id;
+        ON winner_id = matches_count.player_id
+    ORDER BY win_count;
