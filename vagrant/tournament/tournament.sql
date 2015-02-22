@@ -52,7 +52,7 @@ CREATE VIEW player_standing AS
            win_count.count as win_count,
            loss_count.count as lose_count,
            match_count.count as match_count
-    FROM win
+    FROM win_count
         JOIN loss_count
         ON winner_id = loser_id
         JOIN player
