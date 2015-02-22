@@ -103,7 +103,7 @@ def swissPairings():
     """
     dbconn = connect()
     cursor = dbconn.cursor()
-    cursor.execute("SELECT id1, name1, id2, name2 FROM swiss_pairings;")
+    cursor.execute("SELECT id1, name1, id2, name2 FROM swiss_pairing;")
     results = cursor.fetchall()
     dbconn.close()
     return results
