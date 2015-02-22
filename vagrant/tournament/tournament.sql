@@ -6,14 +6,21 @@
 -- You can write comments in this file by starting them with two dashes, like
 -- these lines here.
 
+-- Tables:
+
 CREATE TABLE player ( id SERIAL PRIMARY KEY,
                       name TEXT );
                        
 CREATE TABLE match ( player1_id INTEGER REFERENCES player (id),
                        player2_id INTEGER REFERENCES player (id),
-                       winner_id INTEGER NULL REFERENCES player (id), -- So that draws can be recorded as null, not yet used
+                       winner_id INTEGER NULL REFERENCES player (id) -- So that draws can be recorded as null (not yet used)
+                            CHECK ( winner_id = player1_id
+                                    or winner_id = player2_id 
+                                    or winner_id IS NULL ),      -- constraint so winner must one of the players 
                        PRIMARY KEY (player1_id, player2_id),
                        CHECK (player1_id < player2_id) ); -- constraints to ensure that players are matched only once
+
+-- Views:
 
 CREATE VIEW match_loser AS
     SELECT player1_id,
