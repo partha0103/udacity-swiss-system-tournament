@@ -22,10 +22,15 @@ CREATE TABLE match ( player1_id INTEGER REFERENCES player (id),
 
 -- Views:
 
+-- Used as an input to loss_count.
+--
+--  player1_id | player2_id | loser_id 
+-- ------------+------------+----------
+--
 CREATE VIEW match_loser AS
     SELECT player1_id,
            player2_id,
-           CASE 
+           CASE -- selects the id of the losing player
                 WHEN winner_id = player1_id THEN player2_id
                 WHEN winner_id = player2_id THEN player1_id
                 WHEN winner_id IS NULL THEN NULL
@@ -34,21 +39,21 @@ CREATE VIEW match_loser AS
 
 CREATE VIEW win_count AS 
     SELECT player.id as winner_id,
-           COUNT(match.winner_id)
+           COUNT(match.winner_id) as num_matches_won
     FROM player LEFT JOIN match -- has to be a left join to get zero values
     ON player.id = match.winner_id
     GROUP BY player.id;
 
 CREATE VIEW loss_count AS 
     SELECT player.id as loser_id,
-           COUNT(match_loser.loser_id)
+           COUNT(match_loser.loser_id) as num_matches_lost
     FROM player LEFT JOIN match_loser -- has to be a left join to get zero values
     ON player.id = match_loser.loser_id
     GROUP BY player.id;
 
 CREATE VIEW match_count AS
     SELECT player.id AS player_id,
-           COUNT(player1_id) 
+           COUNT(player1_id) as num_matches 
     FROM player LEFT JOIN match
     ON player.id = player1_id OR player.id = player2_id
     GROUP BY player.id;
@@ -56,9 +61,9 @@ CREATE VIEW match_count AS
 CREATE VIEW player_standing AS
     SELECT winner_id as player_id,
            player.name,
-           win_count.count as win_count,
-           loss_count.count as lose_count,
-           match_count.count as match_count
+           win_count.num_matches_won as win_count,
+           loss_count.num_matches_lost as lose_count,
+           match_count.num_matches as match_count
     FROM win_count
         JOIN loss_count
         ON winner_id = loser_id
