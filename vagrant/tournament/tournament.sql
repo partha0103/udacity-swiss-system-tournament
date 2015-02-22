@@ -61,7 +61,7 @@ CREATE VIEW player_standing AS
         ON winner_id = match_count.player_id
     ORDER BY win_count;
 
-CREATE VIEW numbered_standings AS
+CREATE VIEW numbered_standing AS
     SELECT 
         ROW_NUMBER() OVER(ORDER BY win_count DESC) as row,
         ROW_NUMBER() OVER(ORDER BY win_count DESC) % 2 = 0 as even_row, * 
@@ -74,8 +74,8 @@ CREATE VIEW swiss_pairings AS
         b.player_id as id2, 
         b.name as name2
     FROM 
-            (SELECT * FROM numbered_standings WHERE even_row = FALSE) AS a 
+            (SELECT * FROM numbered_standing WHERE even_row = FALSE) AS a 
         JOIN
-            (SELECT * FROM numbered_standings WHERE even_row = TRUE) AS b
+            (SELECT * FROM numbered_standing WHERE even_row = TRUE) AS b
         ON a.row = b.row - 1;
 
