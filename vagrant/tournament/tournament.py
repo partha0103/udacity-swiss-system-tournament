@@ -78,7 +78,13 @@ def reportMatch(winner, loser):
       winner:  the id number of the player who won
       loser:  the id number of the player who lost
     """
- 
+    smaller_id, bigger_id = min(winner, loser), max(winner, loser)
+    dbconn = connect()
+    cursor = dbconn.cursor()
+    cursor.execute("INSERT INTO matches (player1_id, player2_id, winner_id) VALUES (%s, %s, %s);",
+                   (smaller_id, bigger_id, winner))
+    dbconn.commit()
+    dbconn.close()
  
 def swissPairings():
     """Returns a list of pairs of players for the next round of a match.
