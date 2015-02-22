@@ -31,7 +31,7 @@ def countPlayers():
     """Returns the number of players currently registered."""
     dbconn = connect()
     cursor = dbconn.cursor()
-    cursor.execute("SELECT COUNT(*) FROM players")
+    cursor.execute("SELECT COUNT(*) FROM players;")
     count = cursor.fetchall()[0][0]
     dbconn.close()
     return count
@@ -45,7 +45,11 @@ def registerPlayer(name):
     Args:
       name: the player's full name (need not be unique).
     """
-
+    dbconn = connect()
+    cursor = dbconn.cursor()
+    cursor.execute("INSERT INTO players (name) VALUES (%s);", (name,))
+    dbconn.commit()
+    dbconn.close()
 
 def playerStandings():
     """Returns a list of the players and their win records, sorted by wins.
