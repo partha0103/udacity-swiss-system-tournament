@@ -101,10 +101,10 @@ def swissPairings():
         id2: the second player's unique id
         name2: the second player's name
     """
-    standings = [(player[0], player[1]) for player in playerStandings()]
-    # put standings into a list of pairs like ((id1, name2), (id2, name2)) 
-    pairings = zip(standings[::2], standings[1::2]) # http://stackoverflow.com/q/4628290
-    # flatten pairs of standings e.g. ((id, name), (id2, name2)) becomes (id, name, id2, name2)
-    pairings = [(x[0][0], x[0][1], x[1][0], x[1][1]) for x in pairings]
-    return pairings
+    dbconn = connect()
+    cursor = dbconn.cursor()
+    cursor.execute("SELECT id1, name1, id2, name2 FROM swiss_pairings;")
+    results = cursor.fetchall()
+    dbconn.close()
+    return results
 
