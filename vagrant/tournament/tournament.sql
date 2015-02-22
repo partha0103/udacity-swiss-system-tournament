@@ -37,6 +37,12 @@ CREATE VIEW match_loser AS
            END AS loser_id
     FROM match;
 
+
+-- Used as input to player_standing
+--
+--  winner_id | num_matches_won 
+-- -----------+-----------------
+--
 CREATE VIEW win_count AS 
     SELECT player.id as winner_id,
            COUNT(match.winner_id) as num_matches_won
@@ -44,6 +50,12 @@ CREATE VIEW win_count AS
     ON player.id = match.winner_id
     GROUP BY player.id;
 
+
+-- Used as input to player_standing
+--
+--  loser_id | num_matches_lost 
+-- ----------+------------------
+--
 CREATE VIEW loss_count AS 
     SELECT player.id as loser_id,
            COUNT(match_loser.loser_id) as num_matches_lost
