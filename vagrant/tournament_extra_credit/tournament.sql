@@ -13,6 +13,11 @@ CREATE TABLE player (
     name TEXT
 );
 
+CREATE TABLE tournament (
+    id SERIAL PRIMARY KEY,
+    name TEXT 
+);
+
 -- TO DO: Modify so that matches are linked to a tournament                       
 CREATE TABLE match ( 
     player1_id INTEGER REFERENCES player (id),
@@ -27,11 +32,6 @@ CREATE TABLE match (
     PRIMARY KEY (player1_id, player2_id),           -- constraints to ensure that...
     CHECK (player1_id < player2_id)                 -- ...players are matched only once
 ); 
-
-CREATE TABLE tournament (
-    id SERIAL PRIMARY KEY,
-    name TEXT 
-);
 
 -- Creates many-to-many relationship between players and tournaments                          
 CREATE TABLE tournament_player (
