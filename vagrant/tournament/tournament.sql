@@ -8,17 +8,24 @@
 
 -- Tables:
 
-CREATE TABLE player ( id SERIAL PRIMARY KEY,
-                      name TEXT );
+CREATE TABLE player (
+    id SERIAL PRIMARY KEY,
+    name TEXT
+);
                        
-CREATE TABLE match ( player1_id INTEGER REFERENCES player (id),
-                       player2_id INTEGER REFERENCES player (id),
-                       winner_id INTEGER NULL REFERENCES player (id) -- So that draws can be recorded as null (not yet used)
-                            CHECK ( winner_id = player1_id
-                                    or winner_id = player2_id 
-                                    or winner_id IS NULL ),      -- constraint so winner must one of the players 
-                       PRIMARY KEY (player1_id, player2_id),
-                       CHECK (player1_id < player2_id) ); -- constraints to ensure that players are matched only once
+CREATE TABLE match ( 
+    player1_id INTEGER REFERENCES player (id),
+    player2_id INTEGER REFERENCES player (id),
+    winner_id INTEGER NULL REFERENCES player (id)   -- So that draws can be recorded as null (not yet used)
+        CHECK (                                     -- constraint so winner must one of the players
+            winner_id = player1_id
+            or winner_id = player2_id 
+            or winner_id IS NULL
+        ),       
+    PRIMARY KEY (player1_id, player2_id),           -- constraints to ensure that...
+    CHECK (player1_id < player2_id)                 -- ...players are matched only once
+);
+
 
 -- Views:
 
