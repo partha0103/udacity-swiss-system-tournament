@@ -11,11 +11,15 @@ def connect():
     return psycopg2.connect("dbname=tournament_extra_credit")
 
 
-def deleteMatches():
-    """Remove all the match records from the database."""
+def deleteMatches(tournament=None):
+    """If a tournament id is provided, remove all of that tournament's matches from the database.
+    Otherwise, remove all the match records from the database."""
     dbconn = connect()
     cursor = dbconn.cursor()
-    cursor.execute("DELETE FROM match;")
+    if tournament:
+        cursor.execute("DELETE FROM march WHERE tournament_id = %s;", (tournament,))
+    else:
+        cursor.execute("DELETE FROM match;")
     dbconn.commit()
     dbconn.close()
 
