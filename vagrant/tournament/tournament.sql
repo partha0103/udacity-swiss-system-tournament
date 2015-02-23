@@ -63,6 +63,12 @@ CREATE VIEW loss_count AS
     ON player.id = match_loser.loser_id
     GROUP BY player.id;
 
+
+-- Used as input to player_standing
+--
+--  player_id | num_matches 
+-- -----------+-------------
+--
 CREATE VIEW match_count AS
     SELECT player.id AS player_id,
            COUNT(player1_id) as num_matches 
@@ -70,6 +76,10 @@ CREATE VIEW match_count AS
     ON player.id = player1_id OR player.id = player2_id
     GROUP BY player.id;
 
+
+--  player_id |  name  | win_count | lose_count | match_count 
+-- -----------+--------+-----------+------------+-------------
+--
 CREATE VIEW player_standing AS
     SELECT winner_id as player_id,
            player.name,
@@ -78,19 +88,26 @@ CREATE VIEW player_standing AS
            match_count.num_matches as match_count
     FROM win_count
         JOIN loss_count
-        ON winner_id = loser_id
+            ON winner_id = loser_id
         JOIN player
-        ON winner_id = player.id
+            ON winner_id = player.id
         JOIN match_count
-        ON winner_id = match_count.player_id
+            ON winner_id = match_count.player_id
     ORDER BY win_count;
 
+
+-- Used as input to swiss_pairings
 CREATE VIEW numbered_standing AS
     SELECT 
         ROW_NUMBER() OVER(ORDER BY win_count DESC) as row,
-        ROW_NUMBER() OVER(ORDER BY win_count DESC) % 2 = 0 as even_row, * 
+        ROW_NUMBER() OVER(ORDER BY win_count DESC) % 2 = 0 as even_row,
+        * 
     FROM player_standing;
 
+
+--  id1 | name1  | id2 |   name2    
+-- -----+--------+-----+------------
+--
 CREATE VIEW swiss_pairing AS
     SELECT
         a.player_id as id1, 
@@ -98,8 +115,8 @@ CREATE VIEW swiss_pairing AS
         b.player_id as id2, 
         b.name as name2
     FROM 
-            (SELECT * FROM numbered_standing WHERE even_row = FALSE) AS a 
+        (SELECT * FROM numbered_standing WHERE even_row = FALSE) AS a 
         JOIN
-            (SELECT * FROM numbered_standing WHERE even_row = TRUE) AS b
+        (SELECT * FROM numbered_standing WHERE even_row = TRUE) AS b
         ON a.row = b.row - 1;
 
