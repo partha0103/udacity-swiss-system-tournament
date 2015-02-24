@@ -112,6 +112,7 @@ CREATE VIEW numbered_standing AS
     FROM player_standing;
 
 
+-- TO DO: Needs adjusting to avoid repeated pairings
 -- Takes players ordered by number of wins, and pairs the player in
 -- row 1 with that in row 2, row 3 with row 4, row 5 with row 6 etc.
 --
