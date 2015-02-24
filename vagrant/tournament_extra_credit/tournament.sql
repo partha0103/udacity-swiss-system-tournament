@@ -28,7 +28,7 @@ CREATE TABLE match (
             or winner_id = player2_id 
             or winner_id IS NULL 
         ),
-    tournament_id INTEGER REFERENCES tournament (id),
+    tournament_id INTEGER REFERENCES tournament (id),   -- TO DO: Modify so that players must be entrants to tournament
     PRIMARY KEY (player1_id, player2_id),           -- constraints to ensure that...
     CHECK (player1_id < player2_id)                 -- ...players are matched only once
 ); 

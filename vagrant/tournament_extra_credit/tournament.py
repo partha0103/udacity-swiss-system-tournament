@@ -10,7 +10,7 @@ def connect():
     """Connect to the PostgreSQL database.  Returns a database connection."""
     return psycopg2.connect("dbname=tournament_extra_credit")
 
-
+# TO DO: Write test for new functionality
 def deleteMatches(tournament=None):
     """If a tournament id is provided, remove all of that tournament's matches from the database.
     Otherwise, remove all the match records from the database."""
@@ -23,7 +23,7 @@ def deleteMatches(tournament=None):
     dbconn.commit()
     dbconn.close()
 
-def deletePlayers():
+def deletePlayers(): # TO DO: No changes, but heck still works
     """Remove all the player records from the database."""
     dbconn = connect()
     cursor = dbconn.cursor()
@@ -31,7 +31,7 @@ def deletePlayers():
     dbconn.commit()
     dbconn.close()
 
-def countPlayers():
+def countPlayers(): # TO DO: No changes, but heck still works
     """Returns the number of players currently registered."""
     dbconn = connect()
     cursor = dbconn.cursor()
@@ -40,7 +40,7 @@ def countPlayers():
     dbconn.close()
     return count
 
-def registerPlayer(name):
+def registerPlayer(name): # TO DO: No changes, but heck still works
     """Adds a player to the tournament database.
   
     The database assigns a unique serial id number for the player.  (This
@@ -54,6 +54,17 @@ def registerPlayer(name):
     cursor.execute("INSERT INTO player (name) VALUES (%s);", (name,))
     dbconn.commit()
     dbconn.close()
+
+def enterTournament(player_id, tournament_id): # TO DO: Write test
+    """Enter a player into a tournament"""
+    dbconn = connect()
+    cursor = dbconn.cursor()
+    cursor.execute("INSERT INTO tournament_player (player_id, tournament_id) VALUES (%s, %s);",
+                   (player_id, tournament_id))
+    dbconn.commit()
+    dbconn.close()
+
+# BOOKMARK: Modifie up to this point
 
 def playerStandings():
     """Returns a list of the players and their win records, sorted by wins.
