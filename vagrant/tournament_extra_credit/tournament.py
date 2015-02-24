@@ -23,7 +23,9 @@ def deleteMatches(tournament=None):
     dbconn.commit()
     dbconn.close()
 
-def deletePlayers(): # TO DO: No changes, but heck still works
+# BOOKMARK: Modified up to this point
+
+def deletePlayers(): # TO DO: What happens to related entries in player_tournament when a player is deleted?
     """Remove all the player records from the database."""
     dbconn = connect()
     cursor = dbconn.cursor()
@@ -31,7 +33,7 @@ def deletePlayers(): # TO DO: No changes, but heck still works
     dbconn.commit()
     dbconn.close()
 
-def countPlayers(): # TO DO: No changes, but heck still works
+def countPlayers(): # TO DO: Add option to just count players in particular tournament
     """Returns the number of players currently registered."""
     dbconn = connect()
     cursor = dbconn.cursor()
@@ -40,7 +42,7 @@ def countPlayers(): # TO DO: No changes, but heck still works
     dbconn.close()
     return count
 
-def registerPlayer(name): # TO DO: No changes, but heck still works
+def registerPlayer(name): # TO DO: Can you get this to return the player's id?
     """Adds a player to the tournament database.
   
     The database assigns a unique serial id number for the player.  (This
@@ -55,18 +57,16 @@ def registerPlayer(name): # TO DO: No changes, but heck still works
     dbconn.commit()
     dbconn.close()
 
-def enterTournament(player_id, tournament_id): # TO DO: Write test
+def enterTournament(player_id, tournament_id): # TO DO: New function. Write test
     """Enter a player into a tournament"""
     dbconn = connect()
     cursor = dbconn.cursor()
-    cursor.execute("INSERT INTO tournament_player (player_id, tournament_id) VALUES (%s, %s);",
+    cursor.execute("INSERT INTO player_tournament (player_id, tournament_id) VALUES (%s, %s);",
                    (player_id, tournament_id))
     dbconn.commit()
     dbconn.close()
 
-# BOOKMARK: Modifie up to this point
-
-def playerStandings():
+def playerStandings(): # TO DO: Add option to get player standings just for particular tournament
     """Returns a list of the players and their win records, sorted by wins.
 
     The first entry in the list should be the player in first place, or a player
@@ -86,7 +86,7 @@ def playerStandings():
     dbconn.close()
     return results
 
-def reportMatch(winner, loser):
+def reportMatch(winner, loser): # TO DO: Add tournament parameter.
     """Records the outcome of a single match between two players.
 
     Args:
@@ -101,7 +101,7 @@ def reportMatch(winner, loser):
     dbconn.commit()
     dbconn.close()
  
-def swissPairings():
+def swissPairings(): # TO DO: Add match parameter
     """Returns a list of pairs of players for the next round of a match.
   
     Assuming that there are an even number of players registered, each player

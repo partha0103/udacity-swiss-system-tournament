@@ -34,7 +34,7 @@ CREATE TABLE match (
 ); 
 
 -- Creates many-to-many relationship between players and tournaments                          
-CREATE TABLE tournament_player (
+CREATE TABLE player_tournament (
     player_id INTEGER REFERENCES player (id),
     tournament_id INTEGER REFERENCES tournament (id),
     PRIMARY KEY (player_id, tournament_id)
