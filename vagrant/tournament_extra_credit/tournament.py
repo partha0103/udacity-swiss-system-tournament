@@ -17,7 +17,7 @@ def deleteMatches(tournament=None):
     dbconn = connect()
     cursor = dbconn.cursor()
     if tournament:
-        cursor.execute("DELETE FROM march WHERE tournament_id = %s;", (tournament,))
+        cursor.execute("DELETE FROM match WHERE tournament_id = %s;", (tournament,))
     else:
         cursor.execute("DELETE FROM match;")
     dbconn.commit()
@@ -25,7 +25,7 @@ def deleteMatches(tournament=None):
 
 # BOOKMARK: Modified up to this point
 
-def deletePlayers(): # TO DO: What happens to related entries in player_tournament when a player is deleted?
+def deletePlayers():
     """Remove all the player records from the database."""
     dbconn = connect()
     cursor = dbconn.cursor()

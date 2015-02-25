@@ -20,23 +20,23 @@ CREATE TABLE tournament (
 
 -- TO DO: Modify so that matches are linked to a tournament                       
 CREATE TABLE match ( 
-    player1_id INTEGER REFERENCES player (id),
-    player2_id INTEGER REFERENCES player (id),
+    player1_id INTEGER REFERENCES player (id) ON DELETE CASCADE, -- If player1 is deleted, their matches will be deleted
+    player2_id INTEGER REFERENCES player (id) ON DELETE CASCADE, -- If player2 is deleted, their matches will be deleted
     winner_id INTEGER NULL REFERENCES player (id)   -- So that draws can be recorded as null (not yet used)
         CHECK (                                     -- constraint so winner must one of the players
             winner_id = player1_id
             or winner_id = player2_id 
             or winner_id IS NULL 
         ),
-    tournament_id INTEGER REFERENCES tournament (id),   -- TO DO: Modify so that players must be entrants to tournament
+    tournament_id INTEGER REFERENCES tournament (id) ON DELETE CASCADE,   -- TO DO: Modify so that players must be entrants to tournament
     PRIMARY KEY (player1_id, player2_id),           -- constraints to ensure that...
     CHECK (player1_id < player2_id)                 -- ...players are matched only once
 ); 
 
 -- Creates many-to-many relationship between players and tournaments                          
 CREATE TABLE player_tournament (
-    player_id INTEGER REFERENCES player (id),
-    tournament_id INTEGER REFERENCES tournament (id),
+    player_id INTEGER REFERENCES player (id) ON DELETE CASCADE, -- If a player is deleted, the row linking them to a tournament is deleted
+    tournament_id INTEGER REFERENCES tournament (id) ON DELETE CASCADE, -- If a tournament is deleted, their rows are deleted
     PRIMARY KEY (player_id, tournament_id)
 );
                                  
