@@ -86,6 +86,18 @@ def reportMatch(winner, loser):
     dbconn.commit()
     dbconn.close()
  
+def getMatches(winner=False): # Needs testing fully
+    """Return a list of matches played, optionally detailing who won."""
+    dbconn = connect()
+    cursor = dbconn.cursor()
+    if winner:
+        cursor.execute("SELECT player1_id, player2_id, winner_id FROM match;")
+    else:
+        cursor.execute("SELECT player1_id, player2_id FROM match;")
+    matches = cursor.fetchall()
+    dbconn.close()
+    return matches    
+    
 def swissPairings():
     """Returns a list of pairs of players for the next round of a match.
   
@@ -101,10 +113,22 @@ def swissPairings():
         id2: the second player's unique id
         name2: the second player's name
     """
-    dbconn = connect()
-    cursor = dbconn.cursor()
-    cursor.execute("SELECT id1, name1, id2, name2 FROM swiss_pairing;")
-    results = cursor.fetchall()
-    dbconn.close()
+    
+    # Get list of matches played
+    matches = set(getMatches())
+    
+    # Construct swiss pairings
+    standings = playerStandings()    
+    
+    results = []
+    while standings:
+        player1 = standings.pop(0)
+        id1, name1 = player1[0], player1[1]
+        for i in range(len(standings)):
+            player2 = standings[i]
+            id2, name2 = player2[0], player2[1]
+            if set([id1, id2]) not in matches:
+                standings.pop(i)
+                results.append((id1, name1, id2, name2))
+                break
     return results
-

@@ -70,32 +70,3 @@ CREATE VIEW player_standing AS
             ON winner_id = match_count.player_id
     ORDER BY win_count;
 
-
--- Used as input to swiss_pairings
-CREATE VIEW numbered_standing AS
-    SELECT 
-        ROW_NUMBER() OVER(ORDER BY win_count DESC) as row,
-        ROW_NUMBER() OVER(ORDER BY win_count DESC) % 2 = 0 as even_row,
-        * 
-    FROM player_standing;
-
-
--- TO DO: Needs adjusting to avoid repeated pairings
--- Takes players ordered by number of wins, and pairs the player in
--- row 1 with that in row 2, row 3 with row 4, row 5 with row 6 etc.
---
---  id1 | name1  | id2 |   name2    
--- -----+--------+-----+------------
---
-CREATE VIEW swiss_pairing AS
-    SELECT
-        a.player_id as id1, 
-        a.name as name1, 
-        b.player_id as id2, 
-        b.name as name2
-    FROM 
-        (SELECT * FROM numbered_standing WHERE even_row = FALSE) AS a 
-        JOIN
-        (SELECT * FROM numbered_standing WHERE even_row = TRUE) AS b
-        ON a.row = b.row - 1;
-
