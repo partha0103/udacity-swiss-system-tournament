@@ -86,7 +86,7 @@ def reportMatch(winner, loser):
     dbconn.commit()
     dbconn.close()
  
-def getMatches(winner=False): # Needs testing fully
+def getMatches(winner=False):
     """Return a list of matches played, optionally detailing who won."""
     dbconn = connect()
     cursor = dbconn.cursor()
