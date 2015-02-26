@@ -144,7 +144,12 @@ def testCreateTournament():
     deleteMatches()
     deletePlayers()
     deleteTournaments()
-    createTournament("Testing tournament")
+    tournament_id = createTournament("Testing tournament")
+    
+    # Check that createTournament returns an integer ID
+    if not isinstance(tournament_id, int):
+        raise ValueError("createTournament() should return an integer id.")
+    print "11. createTournament() returns an integer id."
     
     # Check that there is now one tournament in the table
     dbconn = connect()
@@ -153,7 +158,7 @@ def testCreateTournament():
     count = cursor.fetchall()[0][0]
     if count != 1:
         raise ValueError("After running createTournaments(), there should be 1 tournaments.")
-    print "11. After running createTournament(), there are 1 tournaments."
+    print "12. After running createTournament(), there are 1 tournaments."
     
     createTournament("Testing tournament two")
     
@@ -163,7 +168,7 @@ def testCreateTournament():
     dbconn.close()
     if count != 2:
         raise ValueError("After running createTournaments(), there should be 2 tournaments.")
-    print "12. After running createTournament() again, there are 2 tournaments."
+    print "13. After running createTournament() again, there are 2 tournaments."
     
     # Clean up
     deleteTournaments()
