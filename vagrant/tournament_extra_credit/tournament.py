@@ -123,3 +123,21 @@ def swissPairings(): # TO DO: Add match parameter
     dbconn.close()
     return results
 
+# Extra functions for extra credit: multiple tournaments
+
+def deleteTournaments():
+    dbconn = connect()
+    cursor = dbconn.cursor()
+    cursor.execute("DELETE FROM tournament;")
+    dbconn.commit()
+    dbconn.close()
+    
+def createTournament(name):
+    dbconn = connect()
+    cursor = dbconn.cursor()
+    cursor.execute("INSERT INTO tournament (name) VALUES (%s) RETURNING id", (name,))
+    row_id = cursor.fetchone()[0]
+    dbconn.commit()
+    return row_id
+    dbconn.close()
+

@@ -124,16 +124,62 @@ def testPairings():
             "After one match, players with one win should be paired.")
     print "8. After one match, players with one win are paired."
 
+# Additional tests for extra credit: multiple tournament
 
+def testDeleteTournaments():
+    deleteTournaments()
+    print "9. Old tournaments can be deleted."
+    
+    # Check that there are no tournaments in the table
+    dbconn = connect()
+    cursor = dbconn.cursor()
+    cursor.execute("SELECT COUNT(*) FROM tournament;")
+    count = cursor.fetchall()[0][0]
+    dbconn.close()
+    if count != 0:
+        raise ValueError("After running deleteTournaments(), there should be 0 tournaments.")
+    print "10. After running deleteTournament(), there are 0 tournaments."
+
+def testCreateTournament():
+    deleteMatches()
+    deletePlayers()
+    deleteTournaments()
+    createTournament("Testing tournament")
+    
+    # Check that there is now one tournament in the table
+    dbconn = connect()
+    cursor = dbconn.cursor()
+    cursor.execute("SELECT COUNT(*) FROM tournament;")
+    count = cursor.fetchall()[0][0]
+    if count != 1:
+        raise ValueError("After running createTournaments(), there should be 1 tournaments.")
+    print "11. After running createTournament(), there are 1 tournaments."
+    
+    createTournament("Testing tournament two")
+    
+    # Check that there are now two tournament in the table
+    cursor.execute("SELECT COUNT(*) FROM tournament;")
+    count = cursor.fetchall()[0][0]
+    dbconn.close()
+    if count != 2:
+        raise ValueError("After running createTournaments(), there should be 2 tournaments.")
+    print "12. After running createTournament() again, there are 2 tournaments."
+    
+    # Clean up
+    deleteTournaments()
+    
 if __name__ == '__main__':
     testDeleteMatches()
     testDelete()
     testCount()
     testRegister()
     testRegisterCountDelete()
-    testStandingsBeforeMatches()
-    testReportMatches()
-    testPairings()
+#    testStandingsBeforeMatches()
+#    testReportMatches()
+#    testPairings()
+    # Tests for extra credit: multiple tournaments
+    testDeleteTournaments()
+    testCreateTournament()
     print "Success!  All tests pass!"
 
 
