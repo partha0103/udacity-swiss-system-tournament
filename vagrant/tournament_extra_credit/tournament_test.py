@@ -172,6 +172,16 @@ def testCreateTournament():
     
     # Clean up
     deleteTournaments()
+
+# Test adding players to tournaments (test right amount added)
+# Test counting players once added to tournament (countPlayers)
+# Test deleting players from tournament (add to several, delete from one, count all)
+# Test standings for particular tournament before matches
+# Test reporting matches, and check that expected number of matches exist
+# Test standings for particular tournaments after matches are reported
+# Test that players in reported matches must have entered relevant tournament        
+# Test swiss pairings for particular tournament
+# Test cascading deletes
     
 if __name__ == '__main__':
     testDeleteMatches()
