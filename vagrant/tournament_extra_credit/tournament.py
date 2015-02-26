@@ -57,15 +57,6 @@ def registerPlayer(name): # TO DO: Can you get this to return the player's id?
     dbconn.commit()
     dbconn.close()
 
-def enterTournament(player_id, tournament_id): # TO DO: New function. Write test
-    """Enter a player into a tournament"""
-    dbconn = connect()
-    cursor = dbconn.cursor()
-    cursor.execute("INSERT INTO player_tournament (player_id, tournament_id) VALUES (%s, %s);",
-                   (player_id, tournament_id))
-    dbconn.commit()
-    dbconn.close()
-
 def playerStandings(): # TO DO: Add option to get player standings just for particular tournament
     """Returns a list of the players and their win records, sorted by wins.
 
@@ -139,5 +130,14 @@ def createTournament(name):
     row_id = cursor.fetchone()[0]
     dbconn.commit()
     return row_id
+    dbconn.close()
+
+def enterTournament(player_id, tournament_id): # TO DO: New function. Write test
+    """Enter a player into a tournament"""
+    dbconn = connect()
+    cursor = dbconn.cursor()
+    cursor.execute("INSERT INTO player_tournament (player_id, tournament_id) VALUES (%s, %s);",
+                   (player_id, tournament_id))
+    dbconn.commit()
     dbconn.close()
 
