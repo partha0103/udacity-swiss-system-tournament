@@ -42,7 +42,7 @@ def countPlayers(): # TO DO: Add option to just count players in particular tour
     dbconn.close()
     return count
 
-def registerPlayer(name): # TO DO: Can you get this to return the player's id?
+def registerPlayer(name):
     """Adds a player to the tournament database.
   
     The database assigns a unique serial id number for the player.  (This
@@ -53,9 +53,11 @@ def registerPlayer(name): # TO DO: Can you get this to return the player's id?
     """
     dbconn = connect()
     cursor = dbconn.cursor()
-    cursor.execute("INSERT INTO player (name) VALUES (%s);", (name,))
+    cursor.execute("INSERT INTO player (name) VALUES (%s) RETURNING id;", (name,))
+    row_id = cursor.fetchone()[0]
     dbconn.commit()
     dbconn.close()
+    return row_id
 
 def playerStandings(): # TO DO: Add option to get player standings just for particular tournament
     """Returns a list of the players and their win records, sorted by wins.

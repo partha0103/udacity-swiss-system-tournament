@@ -173,7 +173,56 @@ def testCreateTournament():
     # Clean up
     deleteTournaments()
 
-# Test adding players to tournaments (test right amount added)
+def testEnterTournament():
+    # Clean out database
+    deleteMatches()
+    deletePlayers()
+    deleteTournaments()
+    
+    # Create tournaments, players, and enter players into tournaments
+    tournamentA = createTournament("TournamentA")
+    tournamentB = createTournament("TournamentA")
+    player1_id = registerPlayer("Bob")
+    player2_id = registerPlayer("Tim")
+    player3_id = registerPlayer("Dave")
+    enterTournament(player1_id, tournamentA)
+    enterTournament(player2_id, tournamentB)
+    enterTournament(player3_id, tournamentB)
+    
+    # Databse connection
+    dbconn = connect()
+    cursor = dbconn.cursor()
+    
+    # Tests on Tournament A
+    cursor.execute("""SELECT * FROM player_tournament
+                      WHERE tournament_id = %s;""",
+                   (tournamentA,))
+    rows = cursor.fetchall()
+    if len(rows) != 1:
+        raise ValueError("There ought to only 1 entrant in Tournament A. There are {0}".format(len(rows)))
+    print "14. One entrant added to tournament A"
+    if rows[0][0] != player1_id:
+        raise ValueError("The id of the player added to Tournament A should be {0}".format(player1_id))
+    print "15. Correct player added to tournament A"
+    
+    # Tests on Tournament B
+    cursor.execute("""SELECT * FROM player_tournament
+                      WHERE tournament_id = %s;""",
+                   (tournamentB,))
+    rows = cursor.fetchall()
+    if len(rows) != 2:
+        raise ValueError("There ought to 2 entrants in Tournament A. There are {0}".format(len(rows)))
+    print "16. Two entrants added to tournament B"
+    if set([rows[0][0], rows[1][0]]) != set([player2_id, player3_id]):
+        raise ValueError("The id values of the players added to Tournament A should be {0} and {1}".format(player2_id, player3_id))
+    print "17. Correct players added to tournament B"
+    
+    # Database cleanup
+    deleteMatches()
+    deletePlayers()
+    deleteTournaments()
+    dbconn.close()
+    
 # Test counting players once added to tournament (countPlayers)
 # Test deleting players from tournament (add to several, delete from one, count all)
 # Test standings for particular tournament before matches
@@ -195,6 +244,7 @@ if __name__ == '__main__':
     # Tests for extra credit: multiple tournaments
     testDeleteTournaments()
     testCreateTournament()
+    testEnterTournament()
     print "Success!  All tests pass!"
 
 
