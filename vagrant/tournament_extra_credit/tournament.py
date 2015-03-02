@@ -33,11 +33,20 @@ def deletePlayers():
     dbconn.commit()
     dbconn.close()
 
-def countPlayers(): # TO DO: Add option to just count players in particular tournament
+def countPlayers(tournament=None): # TO DO: Add test for added tournament functionality
     """Returns the number of players currently registered."""
     dbconn = connect()
     cursor = dbconn.cursor()
-    cursor.execute("SELECT COUNT(*) FROM player;")
+    if tournament:
+        cursor.execute("""SELECT
+                              COUNT(*)
+                          FROM 
+                              player JOIN player_tournament 
+                              ON player.id = player_tournament.player_id 
+                          WHERE tournament_id = %s;""",
+                      (tournament,))
+    else:
+        cursor.execute("SELECT COUNT(*) FROM player;")
     count = cursor.fetchall()[0][0]
     dbconn.close()
     return count
