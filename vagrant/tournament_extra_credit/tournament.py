@@ -38,11 +38,8 @@ def countPlayers(tournament=None): # TO DO: Add test for added tournament functi
     dbconn = connect()
     cursor = dbconn.cursor()
     if tournament:
-        cursor.execute("""SELECT
-                              COUNT(*)
-                          FROM 
-                              player JOIN player_tournament 
-                              ON player.id = player_tournament.player_id 
+        cursor.execute("""SELECT num_players
+                          FROM players_per_tournament
                           WHERE tournament_id = %s;""",
                       (tournament,))
     else:

@@ -43,6 +43,16 @@ CREATE TABLE player_tournament (
 
 -- Views:
 
+CREATE VIEW players_per_tournament AS
+    SELECT
+        tournament.id as tournament_id,
+        COUNT(player_tournament.player_id) as num_players
+    FROM
+        tournament LEFT JOIN player_tournament
+            ON tournament.id = player_tournament.tournament_id
+    GROUP BY
+        tournament.id
+
 -- Used as an input to loss_count.
 --
 --  player1_id | player2_id | loser_id 

@@ -222,8 +222,54 @@ def testEnterTournament():
     deletePlayers()
     deleteTournaments()
     dbconn.close()
+
+def testCountByTournament():
+    # Clean out database
+    deleteMatches()
+    deletePlayers()
+    deleteTournaments()
     
-# Test counting players once added to tournament (countPlayers)
+    # Create tournaments, and players
+    tournamentA = createTournament("TournamentA")
+    tournamentB = createTournament("TournamentA")
+    player1_id = registerPlayer("Bob")
+    player2_id = registerPlayer("Tim")
+    player3_id = registerPlayer("Dave")
+    
+    #Tests
+    if countPlayers(tournament=tournamentA):
+        raise ValueError("TournamentA should have 0 entrants.")
+    if countPlayers(tournament=tournamentB):
+        raise ValueError("TournamentB should have 0 entrants.")
+    
+    enterTournament(player1_id, tournamentA)
+    
+    if countPlayers(tournament=tournamentA) != 1:
+        raise ValueError("TournamentA should have 1 entrants.")
+    if countPlayers(tournament=tournamentB):
+        raise ValueError("TournamentB should have 0 entrants.")
+    
+    enterTournament(player2_id, tournamentB)
+    
+    if countPlayers(tournament=tournamentA) != 1:
+        raise ValueError("TournamentA should have 1 entrants.")
+    if countPlayers(tournament=tournamentB) != 1:
+        raise ValueError("TournamentB should have 1 entrants.")
+    
+    enterTournament(player3_id, tournamentB)
+    
+    if countPlayers(tournament=tournamentA) != 1:
+        raise ValueError("TournamentA should have 1 entrants.")
+    if countPlayers(tournament=tournamentB) != 2:
+        raise ValueError("TournamentB should have 2 entrants.")
+    
+    print "18. countPlayers gives the right numbers for each tournament."
+    
+    # Database cleanup
+    deleteMatches()
+    deletePlayers()
+    deleteTournaments()
+    
 # Test deleting players from tournament (add to several, delete from one, count all)
 # Test standings for particular tournament before matches
 # Test reporting matches, and check that expected number of matches exist
@@ -245,6 +291,7 @@ if __name__ == '__main__':
     testDeleteTournaments()
     testCreateTournament()
     testEnterTournament()
+    testCountByTournament()
     print "Success!  All tests pass!"
 
 
