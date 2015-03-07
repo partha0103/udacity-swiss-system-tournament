@@ -270,7 +270,7 @@ def testCountByTournament():
     deletePlayers()
     deleteTournaments()
     
-# Test deleting players from tournament (add to several, delete from one, count all)
+# Test deleting matches from tournament (add to several, delete from one, count all)
 # Test standings for particular tournament before matches
 # Test reporting matches, and check that expected number of matches exist
 # Test standings for particular tournaments after matches are reported
