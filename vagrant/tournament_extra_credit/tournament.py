@@ -101,7 +101,43 @@ def reportMatch(winner, loser, tournament): # Todo - add more thourough tests
     dbconn.commit()
     dbconn.close()
  
-def swissPairings(): # TO DO: Add match parameter
+#def swissPairings(): # TO DO: Add match parameter
+#    """Returns a list of pairs of players for the next round of a match.
+#  
+#    Assuming that there are an even number of players registered, each player
+#    appears exactly once in the pairings.  Each player is paired with another
+#    player with an equal or nearly-equal win record, that is, a player adjacent
+#    to him or her in the standings.
+#  
+#    Returns:
+#      A list of tuples, each of which contains (id1, name1, id2, name2)
+#        id1: the first player's unique id
+#        name1: the first player's name
+#        id2: the second player's unique id
+#        name2: the second player's name
+#    """
+#    dbconn = connect()
+#    cursor = dbconn.cursor()
+#    cursor.execute("SELECT id1, name1, id2, name2 FROM swiss_pairing;")
+#    results = cursor.fetchall()
+#    dbconn.close()
+#    return results
+
+def getMatches(tournament, winner=False):
+    """Return a list of matches played, optionally detailing who won."""
+    dbconn = connect()
+    cursor = dbconn.cursor()
+    if winner:
+        cursor.execute("SELECT player1_id, player2_id, winner_id FROM match WHERE tournament_id = %s;",
+                       (tournament,))
+    else:
+        cursor.execute("SELECT player1_id, player2_id FROM match WHERE tournament_id = %s;",
+                       (tournament,))
+    matches = cursor.fetchall()
+    dbconn.close()
+    return matches
+
+def swissPairings(tournament):
     """Returns a list of pairs of players for the next round of a match.
   
     Assuming that there are an even number of players registered, each player
@@ -116,11 +152,24 @@ def swissPairings(): # TO DO: Add match parameter
         id2: the second player's unique id
         name2: the second player's name
     """
-    dbconn = connect()
-    cursor = dbconn.cursor()
-    cursor.execute("SELECT id1, name1, id2, name2 FROM swiss_pairing;")
-    results = cursor.fetchall()
-    dbconn.close()
+    
+    # Get list of matches played
+    matches = set(getMatches(tournament))
+    
+    # Construct swiss pairings
+    standings = playerStandings(tournament)    
+    
+    results = []
+    while standings:
+        player1 = standings.pop(0)
+        id1, name1 = player1[0], player1[1]
+        for i in range(len(standings)):
+            player2 = standings[i]
+            id2, name2 = player2[0], player2[1]
+            if set([id1, id2]) not in matches:
+                standings.pop(i)
+                results.append((id1, name1, id2, name2))
+                break
     return results
 
 # Extra functions for extra credit: multiple tournaments
