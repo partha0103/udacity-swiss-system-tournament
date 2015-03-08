@@ -103,20 +103,20 @@ CREATE VIEW match_count AS
     ORDER BY player_id, tournament_id;
 
 
---  player_id |  name  | win_count | lose_count | match_count 
--- -----------+--------+-----------+------------+-------------
+--  player_id |  name   | win_count | match_count | tournament_id 
+-- -----------+---------+-----------+-------------+---------------
 --
---CREATE VIEW player_standing AS
---    SELECT winner_id as player_id,
---           player.name,
---           win_count.num_matches_won as win_count,
---           match_count.num_matches as match_count
---    FROM win_count
---        JOIN loss_count
---            ON winner_id = loser_id
---        JOIN player
---            ON winner_id = player.id
---        JOIN match_count
---            ON winner_id = match_count.player_id
---    ORDER BY win_count;
+CREATE VIEW player_standing AS
+    SELECT player.id as player_id,
+           player.name,
+           win_count.num_wins as win_count,
+           match_count.num_matches as match_count,
+           match_count.tournament_id
+    FROM player
+        JOIN win_count
+            ON win_count.player_id = player.id
+        JOIN match_count
+            ON win_count.player_id = match_count.player_id
+            AND win_count.tournament_id = match_count.tournament_id
+    ORDER BY tournament_id, win_count;
 
