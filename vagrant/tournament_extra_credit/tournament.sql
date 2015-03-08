@@ -59,7 +59,7 @@ CREATE VIEW players_per_tournament AS
 --
 --  player_id | tournament_id | num_wins 
 -- -----------+---------------+----------
-
+--
 CREATE VIEW win_count AS
     SELECT
         player.id as player_id,
@@ -81,15 +81,26 @@ CREATE VIEW win_count AS
 
 -- Used as input to player_standing
 --
---  player_id | num_matches 
--- -----------+-------------
+--  player_id | tournament_id | num_matches 
+-- -----------+---------------+-------------
 --
---CREATE VIEW match_count AS
---    SELECT player.id AS player_id,
---           COUNT(player1_id) as num_matches 
---    FROM player LEFT JOIN match
---    ON player.id = player1_id OR player.id = player2_id
---    GROUP BY player.id;
+CREATE VIEW match_count AS
+    SELECT
+        player.id as player_id,
+        player_tournament.tournament_id as tournament_id,
+        COUNT(match.player1_id) as num_matches
+    FROM 
+        player 
+            LEFT JOIN player_tournament
+                ON player.id = player_tournament.player_id
+            LEFT JOIN match
+                ON 
+                    (player.id = match.player1_id OR player.id = match.player2_id)
+                    AND player_tournament.tournament_id = match.tournament_id
+    GROUP BY
+        player_tournament.tournament_id,
+        player.id
+    ORDER BY player_id, tournament_id;
 
 
 --  player_id |  name  | win_count | lose_count | match_count 
