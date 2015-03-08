@@ -65,7 +65,7 @@ def registerPlayer(name):
     dbconn.close()
     return row_id
 
-def playerStandings(): # TO DO: Add option to get player standings just for particular tournament
+def playerStandings(tournament):
     """Returns a list of the players and their win records, sorted by wins.
 
     The first entry in the list should be the player in first place, or a player
@@ -80,7 +80,8 @@ def playerStandings(): # TO DO: Add option to get player standings just for part
     """
     dbconn = connect()
     cursor = dbconn.cursor()
-    cursor.execute("SELECT player_id, name, win_count, match_count FROM player_standing;")
+    cursor.execute("SELECT player_id, name, win_count, match_count FROM player_standing WHERE tournament_id = %s;"
+                   (tournament,))
     results = cursor.fetchall()
     dbconn.close()
     return results
