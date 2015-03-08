@@ -297,6 +297,7 @@ def testCountByTournament():
 # Test cascading deletes
     
 if __name__ == '__main__':
+    print "Original tests, modified where applicable to account for extra-credit changes:"
     testDeleteMatches()
     testDelete()
     testCount()
@@ -305,11 +306,13 @@ if __name__ == '__main__':
     testStandingsBeforeMatches()    # Modified for tournament paramter
     testReportMatches()             # Modified for tournament paramter
     testPairings()                  # Modified for tournament paramter
+    
     # Tests for extra credit: multiple tournaments
+    print "\nNew tests for extra credit option: multiple tournaments:"
     testDeleteTournaments()
     testCreateTournament()
     testEnterTournament()
     testCountByTournament()
-    print "Success!  All tests pass!"
+    print "\nSuccess!  All tests pass!"
 
 
