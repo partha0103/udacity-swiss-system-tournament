@@ -378,7 +378,7 @@ def testReportMatchesByTournament():
     reportMatch(p3, p4, t2)
     reportMatch(p5, p2, t2)
     
-    if len(playerStandings(t1)) != 4 or len(playerStandings(t2)) != 4:
+    if len(getMatches(t1)) != 2 or len(getMatches(t2)) != 2:
         raise ValueError("There should be two matches in each tournament")
     
     for (i, n, w, m) in playerStandings(t1):
@@ -404,7 +404,6 @@ def testReportMatchesByTournament():
     
     print "22. After a match, players have updated standings for the relevant tournament."
 
-# Test reporting matches, and check that expected number of matches exist
 # Test standings for particular tournaments after matches are reported
 # Test that players in reported matches must have entered relevant tournament        
 # Test swiss pairings for particular tournament
