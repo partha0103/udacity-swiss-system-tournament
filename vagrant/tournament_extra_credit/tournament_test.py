@@ -57,11 +57,16 @@ def testRegisterCountDelete():
 
 
 def testStandingsBeforeMatches():
+    # Modified to work with a database with multiple tournaments
     deleteMatches()
     deletePlayers()
-    registerPlayer("Melpomene Murray")
-    registerPlayer("Randy Schwartz")
-    standings = playerStandings()
+    deleteTournaments()
+    p1 = registerPlayer("Melpomene Murray")
+    p2 = registerPlayer("Randy Schwartz")
+    t1 = createTournament("t1")
+    enterTournament(p1, t1)
+    enterTournament(p2, t1)
+    standings = playerStandings(t1)
     if len(standings) < 2:
         raise ValueError("Players should appear in playerStandings even before "
                          "they have played any matches.")
@@ -284,7 +289,7 @@ if __name__ == '__main__':
     testCount()
     testRegister()
     testRegisterCountDelete()
-#    testStandingsBeforeMatches()
+    testStandingsBeforeMatches()
 #    testReportMatches()
 #    testPairings()
     # Tests for extra credit: multiple tournaments

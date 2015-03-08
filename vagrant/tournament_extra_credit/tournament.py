@@ -80,7 +80,7 @@ def playerStandings(tournament):
     """
     dbconn = connect()
     cursor = dbconn.cursor()
-    cursor.execute("SELECT player_id, name, win_count, match_count FROM player_standing WHERE tournament_id = %s;"
+    cursor.execute("SELECT player_id, name, win_count, match_count FROM player_standing WHERE tournament_id = %s;",
                    (tournament,))
     results = cursor.fetchall()
     dbconn.close()
