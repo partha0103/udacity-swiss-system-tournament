@@ -418,6 +418,7 @@ def testReportMatchesByTournament():
 # Test swiss pairings for particular tournament
 # Test cascading deletes
 
+# Possibly
 # Test deleting matches from tournament (add to several, delete from one, count all)
     
 if __name__ == '__main__':
