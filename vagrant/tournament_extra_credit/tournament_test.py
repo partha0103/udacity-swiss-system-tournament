@@ -363,6 +363,7 @@ def testReportMatchesByTournament():
     p3 = registerPlayer("Cathy Burton")
     p4 = registerPlayer("Diane Grant")
     p5 = registerPlayer("Bob, son of Tim")
+    p6 = registerPlayer("Ted, son of Ed")
     enterTournament(p1, t1)
     enterTournament(p2, t1)
     enterTournament(p3, t1)
@@ -377,6 +378,15 @@ def testReportMatchesByTournament():
     
     reportMatch(p3, p4, t2)
     reportMatch(p5, p2, t2)
+    
+    # Test that matches can only be reported where the players have already entered the tournament
+    try:
+        reportMatch(p5, p6, t1)
+    except psycopg2.InternalError as e:
+        if not e.message.startswith("Attempted to record match involving player"):
+            raise
+        else:
+            print "22. Database stops attempts to record matches with participants who have not entered relevant tournament"
     
     if len(getMatches(t1)) != 2 or len(getMatches(t2)) != 2:
         raise ValueError("There should be two matches in each tournament")
@@ -402,7 +412,7 @@ def testReportMatchesByTournament():
     deletePlayers()
     deleteTournaments()
     
-    print "22. After a match, players have updated standings for the relevant tournament."
+    print "23. After a match, players have updated standings for the relevant tournament."
 
 # Test standings for particular tournaments after matches are reported
 # Test that players in reported matches must have entered relevant tournament        
