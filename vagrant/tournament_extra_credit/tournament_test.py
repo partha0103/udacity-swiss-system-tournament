@@ -64,6 +64,13 @@ def testStandingsBeforeMatches():
     p1 = registerPlayer("Melpomene Murray")
     p2 = registerPlayer("Randy Schwartz")
     t1 = createTournament("t1")
+    
+    # Test that standings are empty before players enter tournaments
+    standings = playerStandings(t1)
+    if len(standings) != 0:
+        raise ValueError("Players should not appear in a tournament's standings before they have entered any tournaments")
+    print "6. Players do not appear in a tournament's standings before they enter a tournament"
+    
     enterTournament(p1, t1)
     enterTournament(p2, t1)
     standings = playerStandings(t1)
@@ -81,7 +88,7 @@ def testStandingsBeforeMatches():
     if set([name1, name2]) != set(["Melpomene Murray", "Randy Schwartz"]):
         raise ValueError("Registered players' names should appear in standings, "
                          "even if they have no matches played.")
-    print "6. Newly registered players appear in the standings with no matches."
+    print "7. Newly registered players appear in the standings with no matches."
 
 
 def testReportMatches():
@@ -110,7 +117,7 @@ def testReportMatches():
             raise ValueError("Each match winner should have one win recorded.")
         elif i in (id2, id4) and w != 0:
             raise ValueError("Each match loser should have zero wins recorded.")
-    print "7. After a match, players have updated standings."
+    print "8. After a match, players have updated standings."
 
 
 def testPairings():
@@ -140,13 +147,13 @@ def testPairings():
     if correct_pairs != actual_pairs:
         raise ValueError(
             "After one match, players with one win should be paired.")
-    print "8. After one match, players with one win are paired."
+    print "9. After one match, players with one win are paired."
 
 # Additional tests for extra credit: multiple tournament
 
 def testDeleteTournaments():
     deleteTournaments()
-    print "9. Old tournaments can be deleted."
+    print "10. Old tournaments can be deleted."
     
     # Check that there are no tournaments in the table
     dbconn = connect()
@@ -156,7 +163,7 @@ def testDeleteTournaments():
     dbconn.close()
     if count != 0:
         raise ValueError("After running deleteTournaments(), there should be 0 tournaments.")
-    print "10. After running deleteTournament(), there are 0 tournaments."
+    print "11. After running deleteTournament(), there are 0 tournaments."
 
 def testCreateTournament():
     deleteMatches()
@@ -167,7 +174,7 @@ def testCreateTournament():
     # Check that createTournament returns an integer ID
     if not isinstance(tournament_id, int):
         raise ValueError("createTournament() should return an integer id.")
-    print "11. createTournament() returns an integer id."
+    print "12. createTournament() returns an integer id."
     
     # Check that there is now one tournament in the table
     dbconn = connect()
@@ -176,7 +183,7 @@ def testCreateTournament():
     count = cursor.fetchall()[0][0]
     if count != 1:
         raise ValueError("After running createTournaments(), there should be 1 tournaments.")
-    print "12. After running createTournament(), there are 1 tournaments."
+    print "13. After running createTournament(), there are 1 tournaments."
     
     createTournament("Testing tournament two")
     
@@ -186,7 +193,7 @@ def testCreateTournament():
     dbconn.close()
     if count != 2:
         raise ValueError("After running createTournaments(), there should be 2 tournaments.")
-    print "13. After running createTournament() again, there are 2 tournaments."
+    print "14. After running createTournament() again, there are 2 tournaments."
     
     # Clean up
     deleteTournaments()
@@ -218,10 +225,10 @@ def testEnterTournament():
     rows = cursor.fetchall()
     if len(rows) != 1:
         raise ValueError("There ought to only 1 entrant in Tournament A. There are {0}".format(len(rows)))
-    print "14. One entrant added to tournament A"
+    print "15. One entrant added to tournament A"
     if rows[0][0] != player1_id:
         raise ValueError("The id of the player added to Tournament A should be {0}".format(player1_id))
-    print "15. Correct player added to tournament A"
+    print "16. Correct player added to tournament A"
     
     # Tests on Tournament B
     cursor.execute("""SELECT * FROM player_tournament
@@ -230,10 +237,10 @@ def testEnterTournament():
     rows = cursor.fetchall()
     if len(rows) != 2:
         raise ValueError("There ought to 2 entrants in Tournament A. There are {0}".format(len(rows)))
-    print "16. Two entrants added to tournament B"
+    print "17. Two entrants added to tournament B"
     if set([rows[0][0], rows[1][0]]) != set([player2_id, player3_id]):
         raise ValueError("The id values of the players added to Tournament A should be {0} and {1}".format(player2_id, player3_id))
-    print "17. Correct players added to tournament B"
+    print "18. Correct players added to tournament B"
     
     # Database cleanup
     deleteMatches()
@@ -281,7 +288,7 @@ def testCountByTournament():
     if countPlayers(tournament=tournamentB) != 2:
         raise ValueError("TournamentB should have 2 entrants.")
     
-    print "18. countPlayers gives the right numbers for each tournament."
+    print "19. countPlayers gives the right numbers for each tournament."
     
     # Database cleanup
     deleteMatches()
@@ -297,6 +304,14 @@ def testStandingsBeforeMatchesByTournament():
     p3 = registerPlayer("Bob, son of Tim")
     t1 = createTournament("t1")
     t2 = createTournament("t2")
+    
+    # Test that standings are empty before players enter tournaments
+    standings_t1 = playerStandings(t1)
+    standings_t2 = playerStandings(t2)
+    if len(standings_t1) != 0 or len(standings_t2) != 0:
+        raise ValueError("Players should not appear in a tournament's standings before they have entered any tournaments")
+    print "20. Players do not appear in a tournament's standings before they enter a tournament"
+    
     enterTournament(p1, t1)
     enterTournament(p2, t1)
     enterTournament(p2, t2)
@@ -334,7 +349,7 @@ def testStandingsBeforeMatchesByTournament():
         raise ValueError("Registered players' names should appear in standings, "
                          "even if they have no matches played.")
     
-    print "19. Newly registered players appear in the standings with no matches, for multiple tournaments."
+    print "21. Newly registered players appear in the standings with no matches, for any tournaments entered."
 
 # Test reporting matches, and check that expected number of matches exist
 # Test standings for particular tournaments after matches are reported
