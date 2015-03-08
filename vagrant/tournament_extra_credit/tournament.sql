@@ -39,7 +39,26 @@ CREATE TABLE player_tournament (
     tournament_id INTEGER REFERENCES tournament (id) ON DELETE CASCADE, -- If a tournament is deleted, their rows are deleted
     PRIMARY KEY (player_id, tournament_id)
 );
-                                 
+
+-- http://www.postgresql.org/docs/9.0/static/plpgsql-trigger.html
+CREATE FUNCTION check_match_tournament_membership() RETURNS trigger AS $check_match_tournament_membership$
+    BEGIN
+        IF NEW.player1_id NOT IN (SELECT player_id FROM player_tournament WHERE tournament_id = NEW.tournament_id) THEN
+            RAISE EXCEPTION 'Attempted to record match involving player % who is not a participant in tournament %.', 
+                NEW.player1_id, 
+                NEW.tournament_id;
+        END IF;
+        IF NEW.player2_id NOT IN (SELECT player_id FROM player_tournament WHERE tournament_id = NEW.tournament_id) THEN
+            RAISE EXCEPTION 'Attempted to record match involving player % who is not a participant in tournament %.', 
+                NEW.player2_id, 
+                NEW.tournament_id;
+        END IF;
+    RETURN NEW;
+    END;
+$check_match_tournament_membership$ LANGUAGE plpgsql;
+
+CREATE TRIGGER check_match_tournament_membership BEFORE INSERT OR UPDATE ON match
+    FOR EACH ROW EXECUTE PROCEDURE check_match_tournament_membership();
 
 -- Views:
 
