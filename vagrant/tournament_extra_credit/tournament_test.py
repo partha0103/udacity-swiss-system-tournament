@@ -85,17 +85,24 @@ def testStandingsBeforeMatches():
 
 
 def testReportMatches():
+    # Modified to work with a database with multiple tournaments
     deleteMatches()
     deletePlayers()
-    registerPlayer("Bruno Walton")
-    registerPlayer("Boots O'Neal")
-    registerPlayer("Cathy Burton")
-    registerPlayer("Diane Grant")
-    standings = playerStandings()
+    deleteTournaments()
+    t1 = createTournament("t1")
+    p1 = registerPlayer("Bruno Walton")
+    p2 = registerPlayer("Boots O'Neal")
+    p3 = registerPlayer("Cathy Burton")
+    p4 = registerPlayer("Diane Grant")
+    enterTournament(p1, t1)
+    enterTournament(p2, t1)
+    enterTournament(p3, t1)
+    enterTournament(p4, t1)
+    standings = playerStandings(t1)
     [id1, id2, id3, id4] = [row[0] for row in standings]
-    reportMatch(id1, id2)
-    reportMatch(id3, id4)
-    standings = playerStandings()
+    reportMatch(id1, id2, t1)
+    reportMatch(id3, id4, t1)
+    standings = playerStandings(t1)
     for (i, n, w, m) in standings:
         if m != 1:
             raise ValueError("Each player should have one match recorded.")
@@ -290,7 +297,7 @@ if __name__ == '__main__':
     testRegister()
     testRegisterCountDelete()
     testStandingsBeforeMatches()
-#    testReportMatches()
+    testReportMatches()
 #    testPairings()
     # Tests for extra credit: multiple tournaments
     testDeleteTournaments()

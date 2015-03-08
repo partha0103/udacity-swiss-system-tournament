@@ -86,7 +86,7 @@ def playerStandings(tournament):
     dbconn.close()
     return results
 
-def reportMatch(winner, loser): # TO DO: Add tournament parameter.
+def reportMatch(winner, loser, tournament): # Todo - add more thourough tests
     """Records the outcome of a single match between two players.
 
     Args:
@@ -96,8 +96,8 @@ def reportMatch(winner, loser): # TO DO: Add tournament parameter.
     smaller_id, bigger_id = min(winner, loser), max(winner, loser)
     dbconn = connect()
     cursor = dbconn.cursor()
-    cursor.execute("INSERT INTO match (player1_id, player2_id, winner_id) VALUES (%s, %s, %s);",
-                   (smaller_id, bigger_id, winner))
+    cursor.execute("INSERT INTO match (player1_id, player2_id, winner_id, tournament_id) VALUES (%s, %s, %s, %s);",
+                   (smaller_id, bigger_id, winner, tournament))
     dbconn.commit()
     dbconn.close()
  
