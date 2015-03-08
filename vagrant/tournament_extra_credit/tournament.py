@@ -23,8 +23,6 @@ def deleteMatches(tournament=None):
     dbconn.commit()
     dbconn.close()
 
-# BOOKMARK: Modified up to this point
-
 def deletePlayers():
     """Remove all the player records from the database."""
     dbconn = connect()
@@ -100,28 +98,6 @@ def reportMatch(winner, loser, tournament): # Todo - add more thourough tests
                    (smaller_id, bigger_id, winner, tournament))
     dbconn.commit()
     dbconn.close()
- 
-#def swissPairings(): # TO DO: Add match parameter
-#    """Returns a list of pairs of players for the next round of a match.
-#  
-#    Assuming that there are an even number of players registered, each player
-#    appears exactly once in the pairings.  Each player is paired with another
-#    player with an equal or nearly-equal win record, that is, a player adjacent
-#    to him or her in the standings.
-#  
-#    Returns:
-#      A list of tuples, each of which contains (id1, name1, id2, name2)
-#        id1: the first player's unique id
-#        name1: the first player's name
-#        id2: the second player's unique id
-#        name2: the second player's name
-#    """
-#    dbconn = connect()
-#    cursor = dbconn.cursor()
-#    cursor.execute("SELECT id1, name1, id2, name2 FROM swiss_pairing;")
-#    results = cursor.fetchall()
-#    dbconn.close()
-#    return results
 
 def getMatches(tournament, winner=False):
     """Return a list of matches played, optionally detailing who won."""
@@ -190,7 +166,7 @@ def createTournament(name):
     return row_id
     dbconn.close()
 
-def enterTournament(player_id, tournament_id): # TO DO: New function. Write test
+def enterTournament(player_id, tournament_id):
     """Enter a player into a tournament"""
     dbconn = connect()
     cursor = dbconn.cursor()

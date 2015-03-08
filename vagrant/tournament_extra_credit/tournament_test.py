@@ -288,13 +288,14 @@ def testCountByTournament():
     deletePlayers()
     deleteTournaments()
     
-# Test deleting matches from tournament (add to several, delete from one, count all)
 # Test standings for particular tournament before matches
 # Test reporting matches, and check that expected number of matches exist
 # Test standings for particular tournaments after matches are reported
 # Test that players in reported matches must have entered relevant tournament        
 # Test swiss pairings for particular tournament
 # Test cascading deletes
+
+# Test deleting matches from tournament (add to several, delete from one, count all)
     
 if __name__ == '__main__':
     print "Original tests, modified where applicable to account for extra-credit changes:"
