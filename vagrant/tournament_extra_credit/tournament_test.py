@@ -57,7 +57,7 @@ def testRegisterCountDelete():
 
 
 def testStandingsBeforeMatches():
-    # Modified to work with a database with multiple tournaments
+    # Modified to work with a database allowing multiple tournaments
     deleteMatches()
     deletePlayers()
     deleteTournaments()
@@ -92,7 +92,7 @@ def testStandingsBeforeMatches():
 
 
 def testReportMatches():
-    # Modified to work with a database with multiple tournaments
+    # Modified to work with a database allowing multiple tournaments
     deleteMatches()
     deletePlayers()
     deleteTournaments()
@@ -351,6 +351,59 @@ def testStandingsBeforeMatchesByTournament():
     
     print "21. Newly registered players appear in the standings with no matches, for any tournaments entered."
 
+def testReportMatchesByTournament():
+    # Modified to work with a database allowing multiple tournaments
+    deleteMatches()
+    deletePlayers()
+    deleteTournaments()
+    t1 = createTournament("t1")
+    t2 = createTournament("t2")
+    p1 = registerPlayer("Bruno Walton")
+    p2 = registerPlayer("Boots O'Neal")
+    p3 = registerPlayer("Cathy Burton")
+    p4 = registerPlayer("Diane Grant")
+    p5 = registerPlayer("Bob, son of Tim")
+    enterTournament(p1, t1)
+    enterTournament(p2, t1)
+    enterTournament(p3, t1)
+    enterTournament(p4, t1)
+    enterTournament(p2, t2)
+    enterTournament(p3, t2)
+    enterTournament(p4, t2)
+    enterTournament(p5, t2)
+    
+    reportMatch(p1, p2, t1)
+    reportMatch(p3, p4, t1)
+    
+    reportMatch(p3, p4, t2)
+    reportMatch(p5, p2, t2)
+    
+    if len(playerStandings(t1)) != 4 or len(playerStandings(t2)) != 4:
+        raise ValueError("There should be two matches in each tournament")
+    
+    for (i, n, w, m) in playerStandings(t1):
+        if m != 1:
+            raise ValueError("Each player should have one match recorded.")
+        if i in (p1, p3) and w != 1:
+            raise ValueError("Each match winner should have one win recorded.")
+        elif i in (p2, p4) and w != 0:
+            raise ValueError("Each match loser should have zero wins recorded.")
+    
+    for (i, n, w, m) in playerStandings(t2):
+        if m != 1:
+            raise ValueError("Each player should have one match recorded.")
+        if i in (p3, p5) and w != 1:
+            raise ValueError("Each match winner should have one win recorded.")
+        elif i in (p4, p2) and w != 0:
+            raise ValueError("Each match loser should have zero wins recorded.")
+    
+    # Database cleanup
+    deleteMatches()
+    deletePlayers()
+    deleteTournaments()
+    
+    print "22. After a match, players have updated standings for the relevant tournament."
+
 # Test reporting matches, and check that expected number of matches exist
 # Test standings for particular tournaments after matches are reported
 # Test that players in reported matches must have entered relevant tournament        
@@ -377,6 +430,7 @@ if __name__ == '__main__':
     testEnterTournament()
     testCountByTournament()
     testStandingsBeforeMatchesByTournament()
+    testReportMatchesByTournament()
     print "\nSuccess!  All tests pass!"
 
 
