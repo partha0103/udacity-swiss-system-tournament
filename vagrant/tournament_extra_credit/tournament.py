@@ -64,7 +64,8 @@ def registerPlayer(name):
     return row_id
 
 def playerStandings(tournament):
-    """Returns a list of the players and their win records, sorted by wins.
+    """Returns a list of the players and their win records for the specified
+    tournament, sorted by wins.
 
     The first entry in the list should be the player in first place, or a player
     tied for first place if there is currently a tie.
