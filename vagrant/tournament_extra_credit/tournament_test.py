@@ -609,9 +609,46 @@ def testPairingByTournament():
     deleteMatches()
     deletePlayers()
     deleteTournaments()
-    
-# Test cascading deletes
 
+def testCascadingDeletes():
+    """Test that when a player is deleted, the related matches are also deleted"""
+    deleteMatches()
+    deletePlayers()
+    deleteTournaments()
+    
+    t1 = createTournament("t1")
+    
+    p1 = registerPlayer("player A")
+    p2 = registerPlayer("player B")
+    p3 = registerPlayer("player C")
+    p4 = registerPlayer("player D")    
+    
+    enterTournament(p1, t1)
+    enterTournament(p2, t1)
+    enterTournament(p3, t1)
+    enterTournament(p4, t1)
+    
+    reportMatch(p1, p2, t1)
+    reportMatch(p3, p4, t1)
+    
+    if getMatches(t1) != [(p1, p2), (p3, p4)]:
+        raise ValueError("Match reporting not working correctly")
+    
+    conn = connect()
+    cursor = conn.cursor()
+    cursor.execute("DELETE FROM player WHERE id = %s", (p1,))
+    conn.commit()
+    conn.close()
+    
+    if getMatches(t1) != [(p3,p4)]:
+        raise ValueError("When a player is deleted, the related matches should also be deleted.")
+    
+    print "27. When a player is deleted, the related matches are also deleted"
+    
+    # Database cleanup
+    deleteMatches()
+    deletePlayers()
+    deleteTournaments()
     
 if __name__ == '__main__':
     print "\nOriginal tests, modified where applicable to account for extra-credit changes:"
@@ -635,6 +672,7 @@ if __name__ == '__main__':
     testDeleteMatchesByTournament()
     testPlayerStandings()
     testPairingByTournament()
+    testCascadingDeletes()
     print "\nSuccess!  All tests pass!"
 
 
