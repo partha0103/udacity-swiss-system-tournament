@@ -513,7 +513,63 @@ def testPlayerStandings():
     
     print "24. playerStandings() tracks match reporting accurately for multiple tournaments."
 
-# Test swiss pairings for particular tournament
+def testPairingByTournament():
+    deleteMatches()
+    deletePlayers()
+    deleteTournaments()
+    t1 = createTournament("t1")
+    t2 = createTournament("t2")
+    p1 = registerPlayer("Twilight Sparkle")
+    p2 = registerPlayer("Fluttershy")
+    p3 = registerPlayer("Applejack")
+    p4 = registerPlayer("Pinkie Pie")
+    p5 = registerPlayer("Cathy Burton")
+    p6 = registerPlayer("Diane Grant")
+    p7 = registerPlayer("Bob, son of Tim")
+    enterTournament(p1, t1)
+    enterTournament(p2, t1)
+    enterTournament(p3, t1)
+    enterTournament(p4, t1)
+    enterTournament(p4, t2)
+    enterTournament(p5, t2)
+    enterTournament(p6, t2)
+    enterTournament(p7, t2)
+    
+    reportMatch(p1, p2, t1)
+    reportMatch(p3, p4, t1)
+    
+    reportMatch(p4, p5, t2)
+    reportMatch(p6, p7, t2)
+    
+    pairings1 = swissPairings(t1)
+    if len(pairings1) != 2:
+        raise ValueError(
+            "For four players, swissPairings should return two pairs.")
+    [(pid1, pname1, pid2, pname2), (pid3, pname3, pid4, pname4)] = pairings1
+    correct_pairs = set([frozenset([p1, p3]), frozenset([p2, p4])])
+    actual_pairs = set([frozenset([pid1, pid2]), frozenset([pid3, pid4])])
+    if correct_pairs != actual_pairs:
+        raise ValueError(
+            "After one match, players with one win should be paired.")
+    
+    pairings2 = swissPairings(t2)
+    if len(pairings2) != 2:
+        raise ValueError(
+            "For four players, swissPairings should return two pairs.")
+    [(pid1, pname1, pid2, pname2), (pid3, pname3, pid4, pname4)] = pairings2
+    correct_pairs = set([frozenset([p4, p6]), frozenset([p5, p7])])
+    actual_pairs = set([frozenset([pid1, pid2]), frozenset([pid3, pid4])])
+    if correct_pairs != actual_pairs:
+        raise ValueError(
+            "After one match, players with one win should be paired.")
+    
+    print "25. After one match in each of two tournaments, players with one win are paired."
+    
+    # Database cleanup
+    deleteMatches()
+    deletePlayers()
+    deleteTournaments()
+    
 # Test cascading deletes
 
 # Possibly
@@ -539,6 +595,7 @@ if __name__ == '__main__':
     testStandingsBeforeMatchesByTournament()
     testReportMatchesByTournament()
     testPlayerStandings()
+    testPairingByTournament()
     print "\nSuccess!  All tests pass!"
 
 
