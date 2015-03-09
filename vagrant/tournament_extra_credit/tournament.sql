@@ -17,8 +17,7 @@ CREATE TABLE tournament (
     id SERIAL PRIMARY KEY,
     name TEXT 
 );
-
--- TO DO: Modify so that matches are linked to a tournament                       
+            
 CREATE TABLE match ( 
     player1_id INTEGER REFERENCES player (id) ON DELETE CASCADE, -- If player1 is deleted, their matches will be deleted
     player2_id INTEGER REFERENCES player (id) ON DELETE CASCADE, -- If player2 is deleted, their matches will be deleted
@@ -40,6 +39,8 @@ CREATE TABLE player_tournament (
     PRIMARY KEY (player_id, tournament_id)
 );
 
+-- Trigger to prevent users from adding a match, where one or more of the participants in the mathc
+-- has not yet been recorded as an entrant to the relevant tournament.
 CREATE FUNCTION check_match_tournament_membership() RETURNS trigger AS $check_match_tournament_membership$
     BEGIN
         IF NEW.player1_id NOT IN (SELECT player_id FROM player_tournament WHERE tournament_id = NEW.tournament_id) THEN
@@ -61,7 +62,7 @@ CREATE TRIGGER check_match_tournament_membership BEFORE INSERT OR UPDATE ON matc
 
 -- Views:
 
--- Used for countPlayers()
+-- Used for countPlayers() in tournament.py
 CREATE VIEW players_per_tournament AS
     SELECT
         tournament.id as tournament_id,

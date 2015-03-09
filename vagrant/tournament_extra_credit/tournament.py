@@ -30,8 +30,10 @@ def deletePlayers():
     dbconn.commit()
     dbconn.close()
 
-def countPlayers(tournament=None): # TO DO: Add test for added tournament functionality
-    """Returns the number of players currently registered."""
+def countPlayers(tournament=None):
+    """Returns the number of players currently registered.
+    If a tournament id is provided, return the number of players
+    entered into that tournament."""
     dbconn = connect()
     cursor = dbconn.cursor()
     if tournament:
@@ -86,12 +88,13 @@ def playerStandings(tournament):
     dbconn.close()
     return results
 
-def reportMatch(winner, loser, tournament): # Todo - add more thourough tests
+def reportMatch(winner, loser, tournament):
     """Records the outcome of a single match between two players.
 
     Args:
       winner:  the id number of the player who won
       loser:  the id number of the player who lost
+      tournament: the id of the tournament in which the match took place
     """
     smaller_id, bigger_id = min(winner, loser), max(winner, loser)
     dbconn = connect()
@@ -102,7 +105,7 @@ def reportMatch(winner, loser, tournament): # Todo - add more thourough tests
     dbconn.close()
 
 def getMatches(tournament, winner=False):
-    """Return a list of matches played, optionally detailing who won."""
+    """Return a list of matches played in a given tournament, optionally detailing who won."""
     dbconn = connect()
     cursor = dbconn.cursor()
     if winner:
@@ -116,7 +119,7 @@ def getMatches(tournament, winner=False):
     return matches
 
 def swissPairings(tournament):
-    """Returns a list of pairs of players for the next round of a match.
+    """Returns a list of pairs of players for the next round of a match for the given tournament.
   
     Assuming that there are an even number of players registered, each player
     appears exactly once in the pairings.  Each player is paired with another
@@ -153,6 +156,7 @@ def swissPairings(tournament):
 # Extra functions for extra credit: multiple tournaments
 
 def deleteTournaments():
+    """Deletes all tournaments from the database"""
     dbconn = connect()
     cursor = dbconn.cursor()
     cursor.execute("DELETE FROM tournament;")
@@ -160,6 +164,7 @@ def deleteTournaments():
     dbconn.close()
     
 def createTournament(name):
+    """Creates a tournament"""
     dbconn = connect()
     cursor = dbconn.cursor()
     cursor.execute("INSERT INTO tournament (name) VALUES (%s) RETURNING id", (name,))
