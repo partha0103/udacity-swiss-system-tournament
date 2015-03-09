@@ -40,7 +40,6 @@ CREATE TABLE player_tournament (
     PRIMARY KEY (player_id, tournament_id)
 );
 
--- http://www.postgresql.org/docs/9.0/static/plpgsql-trigger.html
 CREATE FUNCTION check_match_tournament_membership() RETURNS trigger AS $check_match_tournament_membership$
     BEGIN
         IF NEW.player1_id NOT IN (SELECT player_id FROM player_tournament WHERE tournament_id = NEW.tournament_id) THEN
@@ -137,5 +136,5 @@ CREATE VIEW player_standing AS
         JOIN match_count
             ON win_count.player_id = match_count.player_id
             AND win_count.tournament_id = match_count.tournament_id
-    ORDER BY tournament_id, win_count;
+    ORDER BY tournament_id, win_count DESC;
 

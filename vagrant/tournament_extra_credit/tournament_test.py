@@ -414,7 +414,105 @@ def testReportMatchesByTournament():
     
     print "23. After a match, players have updated standings for the relevant tournament."
 
-# Test standings for particular tournaments after matches are reported      
+def testPlayerStandings():
+    deleteMatches()
+    deletePlayers()
+    deleteTournaments()
+    t1 = createTournament("t1")
+    t2 = createTournament("t2")
+    p1 = registerPlayer("Bruno Walton")
+    p2 = registerPlayer("Boots O'Neal")
+    p3 = registerPlayer("Cathy Burton")
+    p4 = registerPlayer("Diane Grant")
+    p5 = registerPlayer("Bob, son of Tim")
+    p6 = registerPlayer("Ted, son of Ed")
+    
+    enterTournament(p1, t1)
+    enterTournament(p2, t1)
+    enterTournament(p3, t1)
+    enterTournament(p4, t1)
+    
+    enterTournament(p3, t2)
+    enterTournament(p4, t2)
+    enterTournament(p5, t2)
+    enterTournament(p6, t2)
+    
+    # Tests
+    reportMatch(p1, p4, t1)
+    standings_t1 = iter(playerStandings(t1)) 
+    if next(standings_t1) != (p1, "Bruno Walton", 1, 1):
+        raise ValueError('The first row in the standings for tournament t1 should be ({0}, "Bruno Walton", 1, 1)'.format(p1))
+    for row in standings_t1:
+        if row[2] != 0:
+            raise ValueError('{0} should have zero wins'.format(row[1]))
+        if row[0] == p4:
+            if row[3] != 1:
+                raise ValueError('{0} should have a match count of 1'.format(row[1]))
+        else:
+            if row[3] != 0:
+                raise ValueError('{0} should have a match count of 0'.format(row[1]))
+
+    reportMatch(p3, p1, t1)
+    standings_t1 = playerStandings(t1)
+    if set(standings_t1) != set([(p1, "Bruno Walton", 1, 2),
+                                 (p3, "Cathy Burton", 1, 1),
+                                 (p2, "Boots O'Neal", 0, 0),
+                                 (p4, "Diane Grant", 0, 1)]):
+        raise ValueError("Player standings for tournament t1 are incorrect.")
+    
+    reportMatch(p4, p2, t1)
+    standings_t1 = playerStandings(t1)
+    if set(standings_t1) != set([(p1, "Bruno Walton", 1, 2),
+                                 (p3, "Cathy Burton", 1, 1),
+                                 (p2, "Boots O'Neal", 0, 1),
+                                 (p4, "Diane Grant", 1, 2)]):
+        raise ValueError("Player standings for tournament t1 are incorrect.")
+    
+    reportMatch(p3, p4, t2)
+    standings_t2 = iter(playerStandings(t2)) 
+    if next(standings_t2) != (p3, "Cathy Burton", 1, 1):
+        raise ValueError('The first row in the standings for tournament t2 should be ({0}, "Cathy Burton", 1, 1)'.format(p3))
+    for row in standings_t2:
+        if row[2] != 0:
+            raise ValueError('{0} should have zero wins'.format(row[1]))
+        if row[0] == p4:
+            if row[3] != 1:
+                raise ValueError('{0} should have a match count of 1'.format(row[1]))
+        else:
+            if row[3] != 0:
+                raise ValueError('{0} should have a match count of 0'.format(row[1]))
+    
+    reportMatch(p2, p1, t1)
+    standings_t1 = playerStandings(t1)
+    if set(standings_t1) != set([(p1, "Bruno Walton", 1, 3),
+                                 (p3, "Cathy Burton", 1, 1),
+                                 (p2, "Boots O'Neal", 1, 2),
+                                 (p4, "Diane Grant", 1, 2)]):
+        raise ValueError("Player standings for tournament t1 are incorrect.")
+    
+    reportMatch(p6, p3, t2)
+    standings_t2 = playerStandings(t2)
+    if set(standings_t2) != set([(p3, "Cathy Burton", 1, 2),
+                                 (p4, "Diane Grant", 0, 1),
+                                 (p5, "Bob, son of Tim", 0, 0),
+                                 (p6, "Ted, son of Ed", 1, 1)]):
+        raise ValueError("Player standings for tournament t2 are incorrect.")
+    
+    reportMatch(p3, p4, t1)
+    standings_t1 = playerStandings(t1)
+    if set(standings_t1) != set([(p1, "Bruno Walton", 1, 3),
+                                 (p3, "Cathy Burton", 2, 2),
+                                 (p2, "Boots O'Neal", 1, 2),
+                                 (p4, "Diane Grant", 1, 3)]):
+        raise ValueError("Player standings for tournament t1 are incorrect.")
+    
+    # Database cleanup
+    deleteMatches()
+    deletePlayers()
+    deleteTournaments()
+    
+    print "24. playerStandings() tracks match reporting accurately for multiple tournaments."
+
 # Test swiss pairings for particular tournament
 # Test cascading deletes
 
@@ -440,6 +538,7 @@ if __name__ == '__main__':
     testCountByTournament()
     testStandingsBeforeMatchesByTournament()
     testReportMatchesByTournament()
+    testPlayerStandings()
     print "\nSuccess!  All tests pass!"
 
 
