@@ -414,6 +414,46 @@ def testReportMatchesByTournament():
     
     print "23. After a match, players have updated standings for the relevant tournament."
 
+def testDeleteMatchesByTournament():
+    # Clean out database
+    deleteMatches()
+    deletePlayers()
+    deleteTournaments()
+    
+    t1 = createTournament("t1")
+    t2 = createTournament("t2")
+    p1 = registerPlayer("Bob")
+    p2 = registerPlayer("Tim")
+    p3 = registerPlayer("Dave")
+    
+    enterTournament(p1, t1)
+    enterTournament(p2, t1)
+    enterTournament(p3, t1)
+    enterTournament(p1, t2)
+    enterTournament(p2, t2)
+    enterTournament(p3, t2)
+    
+    reportMatch(p1, p2, t1)
+    reportMatch(p2, p3, t2)
+    
+    if getMatches(t1) != [(p1, p2)] or getMatches(t2) != [(p2, p3)]:
+        raise ValueError("Match reporting not working")
+    
+    deleteMatches(t2)
+    
+    if getMatches(t1) != [(p1, p2)]:
+        raise ValueError("deleteMatches() has deleted too much")
+    
+    if getMatches(t2) != []:
+        raise ValueError("deleteMatches() has not deleted the matches from tournament t2")
+    
+    print "24. deleteMatches can delete matches from a named tournament, leaving the matches of other tournaments in place"
+    
+    # Database cleanup
+    deleteMatches()
+    deletePlayers()
+    deleteTournaments()
+
 def testPlayerStandings():
     deleteMatches()
     deletePlayers()
@@ -511,7 +551,7 @@ def testPlayerStandings():
     deletePlayers()
     deleteTournaments()
     
-    print "24. playerStandings() tracks match reporting accurately for multiple tournaments."
+    print "25. playerStandings() tracks match reporting accurately for multiple tournaments."
 
 def testPairingByTournament():
     deleteMatches()
@@ -563,7 +603,7 @@ def testPairingByTournament():
         raise ValueError(
             "After one match, players with one win should be paired.")
     
-    print "25. After one match in each of two tournaments, players with one win are paired."
+    print "26. After one match in each of two tournaments, players with one win are paired."
     
     # Database cleanup
     deleteMatches()
@@ -572,8 +612,6 @@ def testPairingByTournament():
     
 # Test cascading deletes
 
-# Possibly
-# Test deleting matches from tournament (add to several, delete from one, count all)
     
 if __name__ == '__main__':
     print "\nOriginal tests, modified where applicable to account for extra-credit changes:"
@@ -594,6 +632,7 @@ if __name__ == '__main__':
     testCountByTournament()
     testStandingsBeforeMatchesByTournament()
     testReportMatchesByTournament()
+    testDeleteMatchesByTournament()
     testPlayerStandings()
     testPairingByTournament()
     print "\nSuccess!  All tests pass!"

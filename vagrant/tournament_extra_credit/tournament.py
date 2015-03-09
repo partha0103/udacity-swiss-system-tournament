@@ -10,7 +10,6 @@ def connect():
     """Connect to the PostgreSQL database.  Returns a database connection."""
     return psycopg2.connect("dbname=tournament_extra_credit")
 
-# TO DO: Write test for new functionality
 def deleteMatches(tournament=None):
     """If a tournament id is provided, remove all of that tournament's matches from the database.
     Otherwise, remove all the match records from the database."""
